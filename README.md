@@ -9,7 +9,7 @@ A one-click deep focus blocker browser extension with a Zen Garden design. Suppo
 - The blocked page offers an Override button: a 3-second breathing pause, then a single pass through; refreshing re-blocks.
 - Everything lives in local browser storage; nothing is transmitted anywhere.
 
-The repo also includes a static landing page (install + blocklist transparency) served from CloudFlaresU Pages.
+The repo also includes a static landing page (install + blocklist transparency) served from Cloudflare Pages.
 
 ## Development
 
