@@ -1,0 +1,8 @@
+{
+  "name": {
+    "message": "Enno - Bloqueador de sites para concentração"
+  },
+  "description": {
+    "message": "Um clique inicia uma sessão de concentração de 90 minutos que bloqueia os sites mais distrativos da web. Sem configuração e sem recolha de dados."
+  }
+}
