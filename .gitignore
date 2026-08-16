@@ -6,3 +6,11 @@ dist/
 AGENTS.md
 unlighthouse-artifacts
 .env
+
+# OS and editor cruft
+.DS_Store
+Thumbs.db
+*.local
+*.log
+.idea/
+.vscode/
