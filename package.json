@@ -4,6 +4,9 @@
   "private": true,
   "description": "Enno - a zero-config deep focus and site blocker extension for Chrome and Firefox.",
   "license": "MIT",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "build:extension": "vite build --config vite.extension.config.ts",
     "build:landing": "vite build --config vite.landing.config.ts",
