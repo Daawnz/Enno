@@ -1,0 +1,70 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "popup_enter_focus": "Fokus starten",
+  "popup_hold_to_end": "Zum Beenden halten",
+  "popup_ending": "Wird beendet…",
+  "popup_ending_in": "Endet in {seconds}s…",
+  "popup_sites_shielded": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{count} Website blockiert",
+        "countPlural=other": "{count} Websites blockiert"
+      }
+    }
+  ],
+  "popup_hold_aria": "{seconds} Sekunden gedrückt halten, um die Fokussitzung zu beenden",
+
+  "hold_helper": "{seconds}s weiter gedrückt halten",
+
+  "blocked_title_focus": "Bleib konzentriert",
+  "blocked_title_complete": "Sitzung beendet",
+  "blocked_host_blocked": "{host} ist bis zum Ende der Sitzung blockiert.",
+  "blocked_site_blocked": "Diese Website ist bis zum Ende der Sitzung blockiert.",
+  "blocked_ended": "Die Sitzung ist beendet. Die Website ist wieder entsperrt.",
+  "blocked_hold_to_unlock": "Zum Entsperren gedrückt halten",
+  "blocked_unlocked": "Entsperrt",
+  "blocked_back": "Zurück",
+  "blocked_single_pass": "Einmalige Freigabe. Aktualisieren blockiert erneut.",
+  "blocked_doc_title": "Fokussitzung",
+
+  "landing_badge": "KONZENTRIERT BLEIBEN",
+  "landing_headline": "Schütze deine Aufmerksamkeit.",
+  "landing_subtitle": "Eine datenschutzorientierte Browser-Erweiterung, die ablenkende Websites für 90 Minuten am Stück blockiert. Keine Einrichtung nötig.",
+  "landing_add_firefox": "Zu Firefox hinzufügen",
+  "landing_add_chrome": "Zu Chrome hinzufügen",
+  "landing_only_available": "Nur für Chrome und Firefox verfügbar",
+  "landing_free_open_source": "KOSTENLOS & OPEN SOURCE",
+  "landing_card_1_title": "Der 90-Minuten-Zyklus",
+  "landing_card_1_body": "Arbeite 90 Minuten und mach dann eine Pause. Enno hält die Websites bis zum Ende der Sitzung blockiert.",
+  "landing_card_2_title": "Genau richtig viel Reibung",
+  "landing_card_2_body": "Zum Entsperren hältst du 3 Sekunden gedrückt. Genug, um eine Website nicht mehr automatisch zu öffnen.",
+  "landing_card_3_title": "Datenschutz zuerst",
+  "landing_card_3_body": "Manifest-V3-konform ohne Telemetrie. Deine Daten verlassen niemals dein Gerät.",
+  "landing_card_4_title": "Vorkonfigurierte Blockliste",
+  "landing_view_all_sites": "Alle {count} Websites ansehen",
+  "landing_blocked_sites": "Blockierte Websites",
+  "landing_github_label": "Enno auf GitHub ansehen",
+  "landing_copyright": "© 2026 Enno",
+  "landing_icon_alt": "Enno",
+
+  "blocklist_back": "ZURÜCK",
+  "blocklist_title": "Die Blockliste.",
+  "blocklist_subtitle": "Die {count} ablenkendsten Websites im Web, blockiert während jeder 90-minütigen Sitzung. Du kannst keine Websites hinzufügen oder entfernen.",
+  "blocklist_banner_title": "Keine Einrichtung. Keine Ausnahmen.",
+  "blocklist_banner_body": "Während einer Sitzung blockiert Enno alle {count} Websites in jedem Tab.",
+  "blocklist_category_social": "Soziale Netzwerke",
+  "blocklist_category_video": "Video & Streaming",
+  "blocklist_category_entertainment": "Unterhaltung & Humor",
+  "blocklist_category_news": "Nachrichten & Medien",
+  "blocklist_category_sports": "Sport",
+  "blocklist_category_communities": "Communitys & Foren",
+  "blocklist_category_games": "Spiele",
+  "blocklist_category_reading": "Lesen & Comics",
+
+  "meta_landing_title": "Enno - Schütze deine Aufmerksamkeit",
+  "meta_landing_description": "Eine datenschutzorientierte Browser-Erweiterung, die ablenkende Websites für 90 Minuten am Stück blockiert. Keine Einrichtung nötig.",
+  "meta_blocklist_title": "Enno - Die Blockliste",
+  "meta_blocklist_description": "Die {count} ablenkendsten Websites im Web, blockiert während jeder 90-minütigen Sitzung."
+}

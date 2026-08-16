@@ -1,0 +1,70 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "popup_enter_focus": "Concentreren",
+  "popup_hold_to_end": "Vasthouden om te beëindigen",
+  "popup_ending": "Beëindigen…",
+  "popup_ending_in": "Eindigt over {seconds}s…",
+  "popup_sites_shielded": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{count} site geblokkeerd",
+        "countPlural=other": "{count} sites geblokkeerd"
+      }
+    }
+  ],
+  "popup_hold_aria": "Houd {seconds} seconden vast om de focussessie te beëindigen",
+
+  "hold_helper": "Blijf {seconds}s vasthouden",
+
+  "blocked_title_focus": "Blijf gefocust",
+  "blocked_title_complete": "Sessie voltooid",
+  "blocked_host_blocked": "{host} is geblokkeerd tot de sessie eindigt.",
+  "blocked_site_blocked": "Deze site is geblokkeerd tot de sessie eindigt.",
+  "blocked_ended": "De sessie is beëindigd. De site is weer ontgrendeld.",
+  "blocked_hold_to_unlock": "Houd vast om te ontgrendelen",
+  "blocked_unlocked": "Ontgrendeld",
+  "blocked_back": "Terug",
+  "blocked_single_pass": "Eenmalig ontgrendelen. Vernieuwen blokkeert opnieuw.",
+  "blocked_doc_title": "Focussessie",
+
+  "landing_badge": "BLIJF GEFOCUST",
+  "landing_headline": "Bescherm je aandacht.",
+  "landing_subtitle": "Een privacygerichte browserextensie die afleidende sites 90 minuten lang blokkeert. Geen installatie nodig.",
+  "landing_add_firefox": "Toevoegen aan Firefox",
+  "landing_add_chrome": "Toevoegen aan Chrome",
+  "landing_only_available": "Alleen beschikbaar voor Chrome en Firefox",
+  "landing_free_open_source": "GRATIS & OPEN SOURCE",
+  "landing_card_1_title": "De cyclus van 90 minuten",
+  "landing_card_1_body": "Werk 90 minuten en neem daarna een pauze. Enno houdt de sites geblokkeerd tot de sessie eindigt.",
+  "landing_card_2_title": "Net genoeg wrijving",
+  "landing_card_2_body": "Een site ontgrendelen kost 3 seconden vasthouden. Net genoeg om hem niet gedachteloos te openen.",
+  "landing_card_3_title": "Privacy voorop",
+  "landing_card_3_body": "Manifest V3-compatibel zonder telemetrie. Je gegevens verlaten je apparaat nooit.",
+  "landing_card_4_title": "Vooraf geconfigureerde blokkeerlijst",
+  "landing_view_all_sites": "Bekijk alle {count} sites",
+  "landing_blocked_sites": "Geblokkeerde sites",
+  "landing_github_label": "Enno op GitHub bekijken",
+  "landing_copyright": "© 2026 Enno",
+  "landing_icon_alt": "Enno",
+
+  "blocklist_back": "TERUG",
+  "blocklist_title": "De blokkeerlijst.",
+  "blocklist_subtitle": "De {count} meest afleidende sites op het web, geblokkeerd tijdens elke focussessie van 90 minuten. Je kunt geen sites toevoegen of verwijderen.",
+  "blocklist_banner_title": "Geen installatie. Geen uitzonderingen.",
+  "blocklist_banner_body": "Tijdens een sessie blokkeert Enno alle {count} sites in elk tabblad.",
+  "blocklist_category_social": "Sociale netwerken",
+  "blocklist_category_video": "Video & streaming",
+  "blocklist_category_entertainment": "Entertainment & humor",
+  "blocklist_category_news": "Nieuws & media",
+  "blocklist_category_sports": "Sport",
+  "blocklist_category_communities": "Community's & forums",
+  "blocklist_category_games": "Games",
+  "blocklist_category_reading": "Lezen & strips",
+
+  "meta_landing_title": "Enno - Bescherm je aandacht",
+  "meta_landing_description": "Een privacygerichte browserextensie die afleidende sites 90 minuten lang blokkeert. Geen installatie nodig.",
+  "meta_blocklist_title": "Enno - De blokkeerlijst",
+  "meta_blocklist_description": "De {count} meest afleidende sites op het web, geblokkeerd tijdens elke focussessie van 90 minuten."
+}

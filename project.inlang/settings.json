@@ -1,0 +1,21 @@
+{
+  "$schema": "https://inlang.com/schema/project-settings",
+  "baseLocale": "en",
+  "locales": [
+    "en",
+    "es-ES",
+    "fr-FR",
+    "de-DE",
+    "it-IT",
+    "pt-PT",
+    "nl-NL",
+    "pl-PL"
+  ],
+  "modules": [
+    "https://cdn.jsdelivr.net/npm/@inlang/plugin-message-format@4.4.0/dist/index.js",
+    "https://cdn.jsdelivr.net/npm/@inlang/plugin-m-function-matcher@2.2.6/dist/index.js"
+  ],
+  "plugin.inlang.messageFormat": {
+    "pathPattern": "./app/common/i18n/messages/{locale}.json"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "popup_enter_focus": "Start focus",
+  "popup_hold_to_end": "Hold to end",
+  "popup_ending": "Ending…",
+  "popup_ending_in": "Ending in {seconds}s…",
+  "popup_sites_shielded": [
+    {
+      "declarations": [
+        "input count",
+        "local countPlural = count: plural"
+      ],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{count} Site Blocked",
+        "countPlural=other": "{count} Sites Blocked"
+      }
+    }
+  ],
+  "popup_hold_aria": "Hold {seconds} seconds to end the focus session",
+
+  "hold_helper": "Keep holding for {seconds}s",
+
+  "blocked_title_focus": "Stay focused",
+  "blocked_title_complete": "Focus complete",
+  "blocked_host_blocked": "{host} is blocked until the session ends.",
+  "blocked_site_blocked": "This site is blocked until the session ends.",
+  "blocked_ended": "The session has ended. This site is unlocked again.",
+  "blocked_hold_to_unlock": "Hold to unlock",
+  "blocked_unlocked": "Unlocked",
+  "blocked_back": "Back",
+  "blocked_single_pass": "One-time unlock. Refresh to block again.",
+  "blocked_doc_title": "Focus session",
+
+  "landing_badge": "STAY FOCUSED",
+  "landing_headline": "Protect your attention.",
+  "landing_subtitle": "A privacy-first browser extension that blocks distracting sites for 90 minutes at a time. No setup required.",
+  "landing_add_firefox": "Add to Firefox",
+  "landing_add_chrome": "Add to Chrome",
+  "landing_only_available": "Only available for Chrome and Firefox",
+  "landing_free_open_source": "FREE & OPEN SOURCE",
+  "landing_card_1_title": "The 90-Minute Cycle",
+  "landing_card_1_body": "Work for 90 minutes, then take a break. Enno keeps the sites blocked until the session ends.",
+  "landing_card_2_title": "Just Enough Friction",
+  "landing_card_2_body": "Unblocking a site takes a 3-second hold. Just enough to stop you opening it on autopilot.",
+  "landing_card_3_title": "Privacy First",
+  "landing_card_3_body": "Manifest V3 compliant with zero telemetry. Your data never leaves your device.",
+  "landing_card_4_title": "Pre-configured Blocklist",
+  "landing_view_all_sites": "View all {count} sites",
+  "landing_blocked_sites": "Blocked Sites",
+  "landing_github_label": "View Enno on GitHub",
+  "landing_copyright": "© 2026 Enno",
+  "landing_icon_alt": "Enno",
+
+  "blocklist_back": "BACK",
+  "blocklist_title": "The Blocklist.",
+  "blocklist_subtitle": "The top {count} most distracting sites on the web, blocked during every 90-minute session. You can't add or remove sites.",
+  "blocklist_banner_title": "No setup. No exceptions.",
+  "blocklist_banner_body": "During a session, Enno blocks all {count} sites in every tab.",
+  "blocklist_category_social": "Social Networks",
+  "blocklist_category_video": "Video & Streaming",
+  "blocklist_category_entertainment": "Entertainment & Humor",
+  "blocklist_category_news": "News & Media",
+  "blocklist_category_sports": "Sports",
+  "blocklist_category_communities": "Communities & Forums",
+  "blocklist_category_games": "Games",
+  "blocklist_category_reading": "Reading & Comics",
+
+  "meta_landing_title": "Enno - Protect your attention",
+  "meta_landing_description": "A privacy-first browser extension that blocks distracting sites for 90 minutes at a time. No setup required.",
+  "meta_blocklist_title": "Enno - The Blocklist",
+  "meta_blocklist_description": "The top {count} most distracting sites on the web, blocked during every 90-minute session."
+}

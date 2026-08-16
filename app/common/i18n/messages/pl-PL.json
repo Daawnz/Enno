@@ -1,0 +1,72 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "popup_enter_focus": "Skup się",
+  "popup_hold_to_end": "Przytrzymaj, aby zakończyć",
+  "popup_ending": "Kończenie…",
+  "popup_ending_in": "Koniec za {seconds}s…",
+  "popup_sites_shielded": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{count} zablokowana witryna",
+        "countPlural=few": "{count} zablokowane witryny",
+        "countPlural=many": "{count} zablokowanych witryn",
+        "countPlural=other": "{count} zablokowanej witryny"
+      }
+    }
+  ],
+  "popup_hold_aria": "Przytrzymaj {seconds} sekund, aby zakończyć sesję skupienia",
+
+  "hold_helper": "Przytrzymaj jeszcze {seconds}s",
+
+  "blocked_title_focus": "Skup się",
+  "blocked_title_complete": "Sesja zakończona",
+  "blocked_host_blocked": "{host} jest zablokowana do końca sesji.",
+  "blocked_site_blocked": "Ta witryna jest zablokowana do końca sesji.",
+  "blocked_ended": "Sesja zakończona. Witryna jest znów odblokowana.",
+  "blocked_hold_to_unlock": "Przytrzymaj, aby odblokować",
+  "blocked_unlocked": "Odblokowano",
+  "blocked_back": "Wróć",
+  "blocked_single_pass": "Jednorazowe odblokowanie. Odświeżenie zablokuje ponownie.",
+  "blocked_doc_title": "Skupienie",
+
+  "landing_badge": "POZOSTAŃ SKUPIONY",
+  "landing_headline": "Chroń swoją uwagę.",
+  "landing_subtitle": "Nastawione na prywatność rozszerzenie przeglądarki, które blokuje rozpraszające witryny na 90 minut. Bez konfiguracji.",
+  "landing_add_firefox": "Dodaj do Firefoksa",
+  "landing_add_chrome": "Dodaj do Chrome",
+  "landing_only_available": "Dostępne tylko dla Chrome i Firefoksa",
+  "landing_free_open_source": "ZA DARMO I OPEN SOURCE",
+  "landing_card_1_title": "Cykl 90 minut",
+  "landing_card_1_body": "Pracuj przez 90 minut, a potem zrób przerwę. Enno utrzymuje witryny zablokowane do końca sesji.",
+  "landing_card_2_title": "Tyle tarcia, ile trzeba",
+  "landing_card_2_body": "Odblokowanie witryny wymaga przytrzymania przez 3 sekundy. Tyle, by nie otwierać jej odruchowo.",
+  "landing_card_3_title": "Prywatność przede wszystkim",
+  "landing_card_3_body": "Zgodny z Manifest V3 i bez telemetrii. Twoje dane nigdy nie opuszczają Twojego urządzenia.",
+  "landing_card_4_title": "Wstępnie skonfigurowana lista blokowania",
+  "landing_view_all_sites": "Zobacz wszystkie {count} witryny",
+  "landing_blocked_sites": "Zablokowane witryny",
+  "landing_github_label": "Zobacz Enno na GitHubie",
+  "landing_copyright": "© 2026 Enno",
+  "landing_icon_alt": "Enno",
+
+  "blocklist_back": "WSTECZ",
+  "blocklist_title": "Lista blokowania.",
+  "blocklist_subtitle": "{count} najbardziej rozpraszających witryn w sieci, blokowanych podczas każdej 90-minutowej sesji. Nie możesz dodawać ani usuwać witryn.",
+  "blocklist_banner_title": "Bez konfiguracji. Bez wyjątków.",
+  "blocklist_banner_body": "Podczas sesji Enno blokuje wszystkie {count} witryn w każdej karcie.",
+  "blocklist_category_social": "Serwisy społecznościowe",
+  "blocklist_category_video": "Wideo i streaming",
+  "blocklist_category_entertainment": "Rozrywka i humor",
+  "blocklist_category_news": "Wiadomości i media",
+  "blocklist_category_sports": "Sport",
+  "blocklist_category_communities": "Społeczności i fora",
+  "blocklist_category_games": "Gry",
+  "blocklist_category_reading": "Czytanie i komiksy",
+
+  "meta_landing_title": "Enno - Chroń swoją uwagę",
+  "meta_landing_description": "Nastawione na prywatność rozszerzenie przeglądarki, które blokuje rozpraszające witryny na 90 minut. Bez konfiguracji.",
+  "meta_blocklist_title": "Enno - Lista blokowania",
+  "meta_blocklist_description": "{count} najbardziej rozpraszających witryn w sieci, blokowanych podczas każdej 90-minutowej sesji."
+}

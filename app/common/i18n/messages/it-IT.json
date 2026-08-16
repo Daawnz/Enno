@@ -1,0 +1,71 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "popup_enter_focus": "Concentrati",
+  "popup_hold_to_end": "Tieni premuto per terminare",
+  "popup_ending": "Termine…",
+  "popup_ending_in": "Termina tra {seconds}s…",
+  "popup_sites_shielded": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{count} sito bloccato",
+        "countPlural=other": "{count} siti bloccati",
+        "countPlural=many": "{count} siti bloccati"
+      }
+    }
+  ],
+  "popup_hold_aria": "Tieni premuto {seconds} secondi per terminare la sessione di concentrazione",
+
+  "hold_helper": "Tieni premuto altri {seconds}s",
+
+  "blocked_title_focus": "Resta concentrato",
+  "blocked_title_complete": "Sessione terminata",
+  "blocked_host_blocked": "{host} è bloccato fino al termine della sessione.",
+  "blocked_site_blocked": "Questo sito è bloccato fino al termine della sessione.",
+  "blocked_ended": "La sessione è terminata. Il sito è di nuovo sbloccato.",
+  "blocked_hold_to_unlock": "Tieni premuto per sbloccare",
+  "blocked_unlocked": "Sbloccato",
+  "blocked_back": "Indietro",
+  "blocked_single_pass": "Sblocco monouso. Ricaricare bloccherà di nuovo il sito.",
+  "blocked_doc_title": "Concentrazione",
+
+  "landing_badge": "RESTA CONCENTRATO",
+  "landing_headline": "Proteggi la tua attenzione.",
+  "landing_subtitle": "Un'estensione per browser incentrata sulla privacy che blocca i siti che distraggono per 90 minuti alla volta. Nessuna configurazione richiesta.",
+  "landing_add_firefox": "Aggiungi a Firefox",
+  "landing_add_chrome": "Aggiungi a Chrome",
+  "landing_only_available": "Disponibile solo per Chrome e Firefox",
+  "landing_free_open_source": "GRATIS E OPEN SOURCE",
+  "landing_card_1_title": "Il ciclo dei 90 minuti",
+  "landing_card_1_body": "Lavora per 90 minuti, poi fai una pausa. Enno mantiene i siti bloccati fino alla fine della sessione.",
+  "landing_card_2_title": "Il giusto attrito",
+  "landing_card_2_body": "Sbloccare un sito richiede 3 secondi di pressione. Quanto basta per non aprirlo senza pensarci.",
+  "landing_card_3_title": "Privacy al primo posto",
+  "landing_card_3_body": "Conforme a Manifest V3 e senza telemetria. I tuoi dati non lasciano mai il tuo dispositivo.",
+  "landing_card_4_title": "Blocklist preconfigurata",
+  "landing_view_all_sites": "Vedi tutti i {count} siti",
+  "landing_blocked_sites": "Siti bloccati",
+  "landing_github_label": "Vedi Enno su GitHub",
+  "landing_copyright": "© 2026 Enno",
+  "landing_icon_alt": "Enno",
+
+  "blocklist_back": "INDIETRO",
+  "blocklist_title": "La blocklist.",
+  "blocklist_subtitle": "I {count} siti più distraenti del web, bloccati durante ogni sessione da 90 minuti. Non puoi aggiungere né rimuovere siti.",
+  "blocklist_banner_title": "Nessuna configurazione. Nessuna eccezione.",
+  "blocklist_banner_body": "Durante una sessione, Enno blocca tutti i {count} siti in ogni scheda.",
+  "blocklist_category_social": "Social network",
+  "blocklist_category_video": "Video & streaming",
+  "blocklist_category_entertainment": "Intrattenimento & umorismo",
+  "blocklist_category_news": "Notizie & media",
+  "blocklist_category_sports": "Sport",
+  "blocklist_category_communities": "Community & forum",
+  "blocklist_category_games": "Giochi",
+  "blocklist_category_reading": "Lettura & fumetti",
+
+  "meta_landing_title": "Enno - Proteggi la tua attenzione",
+  "meta_landing_description": "Un'estensione per browser incentrata sulla privacy che blocca i siti che distraggono per 90 minuti alla volta. Nessuna configurazione richiesta.",
+  "meta_blocklist_title": "Enno - La blocklist",
+  "meta_blocklist_description": "I {count} siti più distraenti del web, bloccati durante ogni sessione da 90 minuti."
+}
