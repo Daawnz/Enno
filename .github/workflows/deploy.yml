@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # scripts/build-static.mjs uses process.loadEnvFile, which needs Node >= 20.12
+      # (and is not supported by Bun), so pin an explicit Node version here.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build landing site
+        run: bun run build:landing && node scripts/build-static.mjs
+        env:
+          VITE_LANDING_URL: ${{ vars.VITE_LANDING_URL || 'https://enno-focus.pages.dev' }}
+          VITE_STORE_URL: ${{ vars.VITE_STORE_URL }}
+          VITE_FIREFOX_URL: ${{ vars.VITE_FIREFOX_URL }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist/landing --project-name=enno-focus --branch=main
