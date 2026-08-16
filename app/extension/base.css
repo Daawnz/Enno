@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "../common/theme.css";
+
+[hidden] {
+  display: none !important;
+}
+
+#app {
+  display: contents;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body[data-phase="break"] {
+  background-color: var(--break-bg);
+}
