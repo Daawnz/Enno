@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "../common/theme.css";
+
+body {
+  background-color: var(--bg);
+}
+
+@keyframes Enno-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes Enno-fall {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.enter-rise { animation: Enno-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.enter-fall { animation: Enno-fall 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.enter-delay-1 { animation-delay: 0.1s; }
+.enter-delay-2 { animation-delay: 0.2s; }
+.enter-delay-3 { animation-delay: 0.3s; }
+.enter-delay-4 { animation-delay: 0.4s; }
+.enter-delay-5 { animation-delay: 0.5s; }
+.enter-delay-6 { animation-delay: 0.6s; }
+.enter-delay-7 { animation-delay: 0.7s; }
+@media (prefers-reduced-motion: reduce) {
+  .enter-rise, .enter-fall { animation: none; }
+}
