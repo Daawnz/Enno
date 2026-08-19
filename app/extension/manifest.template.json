@@ -16,6 +16,7 @@
       }
     ]
   },
+  "browser_style": true,
   "background": {
     "service_worker": "background.js",
     "type": "module"

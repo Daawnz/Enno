@@ -1,11 +1,11 @@
 /* The popup must be tall enough to fit the tallest state without resizing:
    during focus the hold button shows a helper label below it, making that
-   state ~30px taller than idle. 400px fits it, so the window does not jump
+   state ~30px taller than idle. 430px fits it, so the window does not jump
    when a session starts or ends; idle just leaves a little breathing room
    above the footer. */
 body {
   width: 340px;
-  min-height: 400px;
+  min-height: 430px;
   display: flex;
   flex-direction: column;
   align-items: center;
