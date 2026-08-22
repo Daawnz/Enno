@@ -52,7 +52,9 @@ test("a blocked site redirects to blocked.html during focus", async ({ extContex
   await expect.poll(() => getEnabledRulesets(extContext)).toContain(BLOCKLIST_RULESET);
 
   const page = await extContext.newPage();
-  await page.goto("https://www.reddit.com/");
+  // The DNR `block` aborts the navigation (ERR_BLOCKED_BY_CLIENT) before the
+  // background replaces it with blocked.html; swallow that expected rejection.
+  await page.goto("https://www.reddit.com/").catch(() => {});
 
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
   await expect(page.locator("#title")).toHaveText("Stay focused");
@@ -63,7 +65,7 @@ test("another blocked domain redirects too", async ({ extContext }) => {
   await expect.poll(() => getEnabledRulesets(extContext)).toContain(BLOCKLIST_RULESET);
 
   const page = await extContext.newPage();
-  await page.goto("https://www.youtube.com/");
+  await page.goto("https://www.youtube.com/").catch(() => {});
 
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 });
@@ -76,7 +78,7 @@ test("override keeps the ruleset enabled", async ({ extContext }) => {
   await expect.poll(() => getEnabledRulesets(extContext)).toContain(BLOCKLIST_RULESET);
 
   const page = await extContext.newPage();
-  await page.goto("https://www.reddit.com/");
+  await page.goto("https://www.reddit.com/").catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 });
 
@@ -107,7 +109,7 @@ test("language additions are blocked only for the active locale", async () => {
 
     // A French addition is blocked for a French browser.
     const frPage = await ctx.newPage();
-    await frPage.goto("https://www.lemonde.fr/");
+    await frPage.goto("https://www.lemonde.fr/").catch(() => {});
     await expect(frPage).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 
     // An English-only addition is not blocked for a French browser.

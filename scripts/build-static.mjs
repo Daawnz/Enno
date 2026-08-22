@@ -15,13 +15,11 @@ loadEnvFile(path.join(root, ".env"));
 
 async function main() {
   const {
-    ALL_DOMAINS,
     BLOCKLIST_LOCALES,
     GLOBAL_DOMAINS,
     GLOBAL_RULESET_ID,
     LOCALE_DOMAINS,
     buildBlockRules,
-    buildHostPermissions,
     rulesetIdForLocale,
   } = await loadBlocklistModule();
 
@@ -43,7 +41,9 @@ async function main() {
   const template = JSON.parse(
     readFileSync(path.join(root, "app/extension/manifest.template.json"), "utf8"),
   );
-  template.host_permissions = buildHostPermissions(ALL_DOMAINS);
+  // Blocking runs through declarativeNetRequest, which needs no host
+  // permissions. Keep host_permissions empty so the install prompt does not
+  // list per-site "read and change your data" warnings.
   template.declarative_net_request.rule_resources = [
     { id: GLOBAL_RULESET_ID, enabled: false, path: "rules.json" },
     ...BLOCKLIST_LOCALES.map(locale => ({

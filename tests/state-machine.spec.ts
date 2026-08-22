@@ -84,7 +84,7 @@ test("mid-session browser restart keeps the session and the block", async () => 
     const page = await ctx2.newPage();
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
     await expect(page.locator("#end-focus-button")).toBeVisible();
-    await page.goto("https://www.reddit.com/");
+    await page.goto("https://www.reddit.com/").catch(() => {});
     await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 
     await ctx2.close();

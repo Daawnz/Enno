@@ -194,10 +194,15 @@ export const ALL_RULESET_IDS: readonly string[] = [
   ...BLOCKLIST_LOCALES.map(rulesetIdForLocale),
 ];
 
+// The ruleset is `block` (not `redirect`) on purpose: Chrome's
+// declarativeNetRequest provides implicit host access to `block` rules, so no
+// host permission is needed per domain. `redirect` rules to an extension page
+// would require a host_permission for every blocked domain, which is exactly
+// the install-time "access your data on this site" wall we avoid.
 export type BlockRule = {
   id: number;
   priority: number;
-  action: { type: "redirect"; redirect: { extensionPath: string } };
+  action: { type: "block" };
   condition: { urlFilter: string; resourceTypes: string[] };
 };
 
@@ -205,13 +210,9 @@ export function buildBlockRules(domains: readonly string[]): BlockRule[] {
   return domains.map((domain, index) => ({
     id: index + 1,
     priority: 1,
-    action: { type: "redirect", redirect: { extensionPath: "/blocked.html" } },
+    action: { type: "block" },
     condition: { urlFilter: `||${domain}/`, resourceTypes: ["main_frame"] },
   }));
-}
-
-export function buildHostPermissions(domains: readonly string[]): string[] {
-  return domains.map(domain => `*://*.${domain}/*`);
 }
 
 export function blockedRootDomainOf(

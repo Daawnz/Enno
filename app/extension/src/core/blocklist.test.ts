@@ -6,7 +6,6 @@ import {
   BLOCKLIST_CATEGORIES,
   BLOCKLIST_LOCALES,
   buildBlockRules,
-  buildHostPermissions,
   categoriesForLocale,
   domainsForLocale,
   GLOBAL_DOMAINS,
@@ -64,7 +63,7 @@ describe("blocklist", () => {
     expect(ALL_RULESET_IDS).toContain("blocklist-pl-PL");
   });
 
-  it("generates one redirect rule per domain with sequential ids", () => {
+  it("generates one block rule per domain with sequential ids", () => {
     const domains = domainsForLocale("en");
     const rules = buildBlockRules(domains);
 
@@ -72,19 +71,12 @@ describe("blocklist", () => {
     rules.forEach((rule, index) => {
       expect(rule.id).toBe(index + 1);
       expect(rule.priority).toBe(1);
-      expect(rule.action.type).toBe("redirect");
-      expect(rule.action.redirect.extensionPath).toBe("/blocked.html");
+      // `block` (not `redirect`): only block/allow rules get implicit host
+      // access from the declarativeNetRequest permission, so redirect would
+      // force one host_permission per domain into the manifest.
+      expect(rule.action.type).toBe("block");
       expect(rule.condition.urlFilter).toBe(`||${domains[index]}/`);
       expect(rule.condition.resourceTypes).toEqual(["main_frame"]);
-    });
-  });
-
-  it("generates a host permission per domain", () => {
-    const permissions = buildHostPermissions(ALL_DOMAINS);
-
-    expect(permissions).toHaveLength(120);
-    ALL_DOMAINS.forEach((domain, index) => {
-      expect(permissions[index]).toBe(`*://*.${domain}/*`);
     });
   });
 

@@ -8,9 +8,6 @@ test("rules.json is in sync with the manifest", () => {
   const rules = JSON.parse(fs.readFileSync(path.join(ext, "rules.json"), "utf8")) as BlockRule[];
   const manifest = JSON.parse(fs.readFileSync(path.join(ext, "manifest.json"), "utf8"));
 
-  const globalDomains: string[] = rules.map(rule =>
-    rule.condition.urlFilter.replace(/^\|\|/, "").replace(/\/$/, ""),
-  );
   const permissions = manifest.host_permissions as string[];
   const resources = manifest.declarative_net_request.rule_resources as Array<{
     id: string;
@@ -20,18 +17,19 @@ test("rules.json is in sync with the manifest", () => {
 
   // The global static ruleset only contains the global domains; locale
   // additions live in their own rulesets.
+  // Blocking rules are `block` (not `redirect`): Chrome only grants implicit
+  // host access to block/allow DNR rules, so `redirect` would force a
+  // host_permission per domain and defeat the clean install prompt.
   expect(rules).toHaveLength(40);
   for (const rule of rules) {
-    expect(rule.action.type).toBe("redirect");
-    expect(rule.action.redirect.extensionPath).toBe("/blocked.html");
+    expect(rule.action.type).toBe("block");
     expect(rule.condition.resourceTypes).toContain("main_frame");
   }
 
-  // Host permissions cover every domain the extension may ever block.
-  expect(permissions).toHaveLength(120);
-  for (const domain of globalDomains) {
-    expect(permissions).toContain(`*://*.${domain}/*`);
-  }
+  // Blocking runs through declarativeNetRequest, which needs no host
+  // permissions; an empty array keeps the install prompt free of per-site
+  // "read and change your data" warnings.
+  expect(permissions).toHaveLength(0);
 
   // One ruleset per locale, each with the locale's 10 additions, plus the
   // global ruleset. All rulesets start disabled (enabled by the state machine).
