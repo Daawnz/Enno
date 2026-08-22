@@ -5,7 +5,7 @@
   "default_locale": "en",
   "minimum_chrome_version": "111",
   "description": "__MSG_description__",
-  "permissions": ["declarativeNetRequest", "storage", "alarms", "webNavigation", "offscreen"],
+  "permissions": ["declarativeNetRequest", "storage", "alarms", "webNavigation"],
   "host_permissions": [],
   "declarative_net_request": {
     "rule_resources": [

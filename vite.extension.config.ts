@@ -31,7 +31,6 @@ export default defineConfig({
       input: {
         popup: path.join(root, "app/extension/popup.html"),
         blocked: path.join(root, "app/extension/blocked.html"),
-        offscreen: path.join(root, "app/extension/offscreen.html"),
         background: path.join(root, "app/extension/src/background.ts"),
       },
       output: {

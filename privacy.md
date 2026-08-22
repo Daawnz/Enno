@@ -12,7 +12,7 @@ Enno stores two kinds of data in your browser's local storage:
   - The timer end time.
   - The record also carries an internal schema version number so stored data stays compatible across extension updates.
   - When the session ends, Enno erases that record.
-- A theme preference (`auto`, `light`, or `dark`) and the derived toolbar-icon dark flag, so the popup, blocked page, and Chrome toolbar icon can keep your chosen appearance across opens and service-worker restarts.
+- A theme preference (`light` or `dark`, defaulting to `light`) and the derived toolbar-icon dark flag, so the popup, blocked page, and Chrome toolbar icon can keep your chosen appearance across opens and service-worker restarts.
 
 None of this data ever leaves your device: it is never synced, uploaded, or shared.
 
@@ -30,7 +30,6 @@ Enno requests only the permissions it needs to work, and uses each one locally:
 - `alarms` - schedules the timer that ends a session.
 - `declarativeNetRequest` - blocks distracting sites while a session is running.
 - `webNavigation` - detects navigation to a blocked site so it can show the blocked page.
-- `offscreen` - runs a hidden page that detects the browser light/dark theme for the Chrome toolbar icon.
 
 None of these permissions are used to read or transmit personal data.
 

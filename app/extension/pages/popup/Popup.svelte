@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ThemePreference } from "../../src/chrome/theme";
-  import { Monitor, Moon, Shield, Sun } from "@lucide/svelte";
+  import { Moon, Shield, Sun } from "@lucide/svelte";
   import * as m from "../../../common/i18n/generated/messages.js";
   import { getLocale } from "../../../common/i18n/generated/runtime.js";
   import { applyThemePreferenceToDocument, writeThemePreference } from "../../src/chrome/theme";
@@ -15,23 +15,15 @@
   // The page main module applies the stored preference before mount, so the
   // data attribute is already the source of truth for the first render.
   let theme = $state<ThemePreference>(
-    document.documentElement.dataset.theme === "light"
-      ? "light"
-      : document.documentElement.dataset.theme === "dark"
-      ? "dark"
-      : "system",
+    document.documentElement.dataset.theme === "dark" ? "dark" : "light",
   );
 
   const themeLabel = $derived(
-    theme === "dark"
-      ? m.popup_theme_dark()
-      : theme === "light"
-      ? m.popup_theme_light()
-      : m.popup_theme_auto(),
+    theme === "dark" ? m.popup_theme_dark() : m.popup_theme_light(),
   );
 
   async function cycleTheme() {
-    const next: ThemePreference = theme === "system" ? "light" : theme === "light" ? "dark" : "system";
+    const next: ThemePreference = theme === "light" ? "dark" : "light";
     theme = next;
     await writeThemePreference(next);
     await applyThemePreferenceToDocument(next);
@@ -121,10 +113,8 @@
   >
     {#if theme === "dark"}
       <Moon class="text-sage" size={14} />
-    {:else if theme === "light"}
-      <Sun class="text-sage" size={14} />
     {:else}
-      <Monitor class="text-sage" size={14} />
+      <Sun class="text-sage" size={14} />
     {/if}
     <span>{themeLabel}</span>
   </button>

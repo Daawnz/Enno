@@ -6,13 +6,10 @@ export type MessageType
     | "stop"
     | "override"
     | "getTarget"
-    | "ping"
-    | "themeChanged";
+    | "ping";
 
 export type MessageRequest = {
   type: MessageType;
-  // Dark-mode flag reported by the offscreen document ("themeChanged").
-  dark?: boolean;
 };
 
 export type StateResponse = {

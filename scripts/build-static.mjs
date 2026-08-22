@@ -104,9 +104,6 @@ function buildFirefoxManifest(chromeManifest) {
     dark: `icons/icon${size}.png`,
     size,
   }));
-  // Chrome-only permission backing the offscreen theme watcher; Firefox does
-  // not know this permission, so keep it out of the Firefox build.
-  firefox.permissions = firefox.permissions.filter(p => p !== "offscreen");
   delete firefox.externally_connectable;
   return firefox;
 }

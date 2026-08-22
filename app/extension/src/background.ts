@@ -8,7 +8,6 @@ import { handleMessage } from "./chrome/messaging";
 import { passCoversUrl, registerPassCleanup, retryBlockedPassNavigation } from "./chrome/pass";
 import {
   applyThemePreferenceToIcon,
-  handleThemeChanged,
   initTheme,
   isThemePreference,
   THEME_PREFERENCE_STORAGE_KEY,
@@ -20,7 +19,7 @@ void initLocale();
 void initTheme();
 
 // Keep the Chrome toolbar icon in sync when the user changes the extension’s
-// theme override from any page. Firefox keeps its native browser-theme icons.
+// Light/Dark preference from any page. Firefox keeps its native browser-theme icons.
 browser.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local")
     return;
@@ -117,11 +116,6 @@ function onMessage(
   sendResponse: (response: MessageResponse) => void,
 ) {
   const req = message as MessageRequest & { targetUrl?: string };
-  if (req.type === "themeChanged") {
-    // Consumed by the toolbar-icon adapter; no response expected.
-    void handleThemeChanged(req);
-    return;
-  }
   if (req.type === "getTarget") {
     // The last real navigation in this tab: what was blocked / where to go
     // back to. blocked.html and other extension pages are excluded from the

@@ -16,10 +16,9 @@
     }
   ],
   "popup_hold_aria": "Tieni premuto {seconds} secondi per terminare la sessione di concentrazione",
-  "popup_theme_auto": "Auto",
   "popup_theme_light": "Chiaro",
   "popup_theme_dark": "Scuro",
-  "popup_theme_aria": "Cambia tema: automatico, chiaro o scuro",
+  "popup_theme_aria": "Passa da chiaro a scuro",
 
   "hold_helper": "Tieni premuto altri {seconds}s",
 

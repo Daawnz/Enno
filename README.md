@@ -8,22 +8,21 @@ Supports Chrome and Firefox (Manifest V3, `declarativeNetRequest`).
 - Enter Focus to start a 90-minute focus session.
 - Distraction sites (Reddit, YouTube, Instagram, X, and more) are blocked out of the box, with extras added per browser language.
 - The blocked page offers an Override button: a 3-second breathing pause, then a single pass through; refreshing re-blocks.
-- The popup includes a theme control: Auto (follow the browser), Light, or Dark. A manual Light/Dark choice overrides the browser theme for the popup and blocked page.
+- The popup includes a theme control: Light (default) or Dark. Choosing Dark overrides the browser theme for the popup and blocked page.
 - Everything lives in local browser storage; nothing is transmitted anywhere.
 
 The repo also includes a static landing page (install + blocklist transparency) served from Cloudflare Pages.
 
 ## Theme override
 
-The popup has a compact theme control that cycles through:
+The popup has a compact theme control that switches between:
 
-- **Auto** – follow the browser’s light/dark preference.
-- **Light** – force light extension UI.
+- **Light** – default extension theme.
 - **Dark** – force dark extension UI.
 
-The choice is stored locally in `chrome.storage.local` and applied to the popup and blocked page through `data-theme` on `<html>` plus the shared tokens in `app/common/theme.css`. On Chrome the toolbar icon follows the override; Firefox keeps its native browser-theme toolbar icons.
+The choice is stored locally in `chrome.storage.local` and applied to the popup and blocked page through `data-theme` on `<html>` plus the shared tokens in `app/common/theme.css`. On Chrome the toolbar icon follows the Light/Dark preference; Firefox keeps its native browser-theme toolbar icons.
 
-No manifest changes are required: the theme preference uses the existing `storage` permission, and Chrome toolbar-icon theming continues to use the existing `offscreen` permission.
+The theme feature itself requires no new manifest permission beyond `storage`; the old `offscreen` browser-theme watcher was removed with Auto mode.
 
 ## Building from source (for Mozilla add-on review)
 

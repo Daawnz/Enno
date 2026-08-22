@@ -25,10 +25,7 @@ const { chromeMock } = vi.hoisted(() => {
           addListener: vi.fn(),
         },
       },
-      offscreen: {
-        Reason: { MATCH_MEDIA: "MATCH_MEDIA" },
-        createDocument: vi.fn(async () => {}),
-      },
+      runtime: {},
     },
   };
 });
@@ -42,21 +39,19 @@ describe("theme preference", () => {
     chromeMock.storage.local.set.mockResolvedValue(undefined);
   });
 
-  it("maps system/light/dark to the effective dark flag", () => {
-    expect(effectiveDark("system", true)).toBe(true);
-    expect(effectiveDark("system", false)).toBe(false);
-    expect(effectiveDark("light", true)).toBe(false);
-    expect(effectiveDark("dark", false)).toBe(true);
+  it("maps light/dark to the effective dark flag", () => {
+    expect(effectiveDark("light")).toBe(false);
+    expect(effectiveDark("dark")).toBe(true);
   });
 
-  it("defaults to system when nothing is stored", async () => {
-    await expect(readThemePreference()).resolves.toBe("system");
+  it("defaults to light when nothing is stored", async () => {
+    await expect(readThemePreference()).resolves.toBe("light");
   });
 
-  it("falls back to system for an invalid stored value", async () => {
-    chromeMock.storage.local.get.mockResolvedValue({ [THEME_PREFERENCE_STORAGE_KEY]: "sepia" });
+  it("falls back to light for an invalid stored value", async () => {
+    chromeMock.storage.local.get.mockResolvedValue({ [THEME_PREFERENCE_STORAGE_KEY]: "auto" });
 
-    await expect(readThemePreference()).resolves.toBe("system");
+    await expect(readThemePreference()).resolves.toBe("light");
   });
 
   it("reads a persisted manual override", async () => {
@@ -66,12 +61,22 @@ describe("theme preference", () => {
   });
 
   it("writes the preference to local storage", async () => {
-    await writeThemePreference("light");
+    await writeThemePreference("dark");
 
-    expect(chromeMock.storage.local.set).toHaveBeenCalledWith({ [THEME_PREFERENCE_STORAGE_KEY]: "light" });
+    expect(chromeMock.storage.local.set).toHaveBeenCalledWith({ [THEME_PREFERENCE_STORAGE_KEY]: "dark" });
   });
 
   it("applies a manual override to the document root", async () => {
+    const dataset: Record<string, string> = {};
+    vi.stubGlobal("document", { documentElement: { dataset } });
+
+    await applyThemePreferenceToDocument("light");
+
+    expect(dataset.theme).toBe("light");
+    vi.unstubAllGlobals();
+  });
+
+  it("always sets a data-theme value for extension pages", async () => {
     const dataset: Record<string, string> = {};
     vi.stubGlobal("document", { documentElement: { dataset } });
 
@@ -81,31 +86,19 @@ describe("theme preference", () => {
     vi.unstubAllGlobals();
   });
 
-  it("removes the data attribute when following the browser", async () => {
-    const dataset: Record<string, string> = { theme: "dark" };
-    vi.stubGlobal("document", { documentElement: { dataset } });
-
-    await applyThemePreferenceToDocument("system");
-
-    expect("theme" in dataset).toBe(false);
-    vi.unstubAllGlobals();
-  });
-
   it("initializes pages from storage and starts listening for changes", async () => {
     const dataset: Record<string, string> = {};
     vi.stubGlobal("document", { documentElement: { dataset } });
-    chromeMock.storage.local.get.mockResolvedValue({ [THEME_PREFERENCE_STORAGE_KEY]: "light" });
+    chromeMock.storage.local.get.mockResolvedValue({ [THEME_PREFERENCE_STORAGE_KEY]: "dark" });
 
     await initPageTheme();
 
-    expect(dataset.theme).toBe("light");
+    expect(dataset.theme).toBe("dark");
     expect(chromeMock.storage.onChanged.addListener).toHaveBeenCalledOnce();
     vi.unstubAllGlobals();
   });
 
   it("applies the manual override to the Chrome toolbar icon", async () => {
-    chromeMock.storage.local.get.mockResolvedValue({ [THEME_PREFERENCE_STORAGE_KEY]: "dark" });
-
     await applyThemePreferenceToIcon("dark");
 
     expect(chromeMock.action.setIcon).toHaveBeenCalledWith({
@@ -113,13 +106,11 @@ describe("theme preference", () => {
     });
   });
 
-  it("uses the remembered browser scheme when switching back to system", async () => {
-    chromeMock.storage.local.get.mockResolvedValue({ systemDarkTheme: true });
-
-    await applyThemePreferenceToIcon("system");
+  it("uses the transparent icon for light mode by default", async () => {
+    await applyThemePreferenceToIcon("light");
 
     expect(chromeMock.action.setIcon).toHaveBeenCalledWith({
-      path: expect.objectContaining({ 16: "icons/icon-bg16.png" }),
+      path: expect.objectContaining({ 16: "icons/icon16.png", 128: "icons/icon128.png" }),
     });
   });
 });

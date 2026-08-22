@@ -18,10 +18,9 @@
     }
   ],
   "popup_hold_aria": "Hold {seconds} seconds to end the focus session",
-  "popup_theme_auto": "Auto",
   "popup_theme_light": "Light",
   "popup_theme_dark": "Dark",
-  "popup_theme_aria": "Change theme: auto, light, or dark",
+  "popup_theme_aria": "Switch between light and dark",
 
   "hold_helper": "Keep holding for {seconds}s",
 

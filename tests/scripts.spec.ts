@@ -60,10 +60,11 @@ test("toolbar icon theme variants are wired in both manifests", () => {
   );
   const sizes = [16, 32, 48, 64, 128];
 
-  // Chrome: JS detection in the background, with the light-background variant
-  // as the safe fallback until it runs (and when it fails). The listing icon
-  // stays transparent - it is shown on light/controlled backgrounds.
-  expect(chromeManifest.permissions).toContain("offscreen");
+  // Chrome: JS applies the persisted Light/Dark choice to the action icon.
+  // The manifest default_icon is the safe light-background fallback until the
+  // background runs. The listing icon stays transparent - it is shown on
+  // light/controlled backgrounds.
+  expect(chromeManifest.permissions).not.toContain("offscreen");
   for (const size of sizes) {
     expect(chromeManifest.action.default_icon[String(size)]).toBe(`icons/icon-bg${size}.png`);
     expect(chromeManifest.icons[String(size)]).toBe(`icons/icon${size}.png`);
@@ -72,7 +73,8 @@ test("toolbar icon theme variants are wired in both manifests", () => {
   // Firefox: native theme_icons. Per MDN, the "light" entry is shown on
   // themes with light text (Firefox Dark) -> light-background icon; the
   // "dark" entry on themes with dark text (Firefox Light/Default) ->
-  // transparent icon. The Chrome-only offscreen permission is stripped.
+  // transparent icon. The Firefox build also omits the Chrome-only offscreen
+  // permission, which is no longer used now that Auto/follow-browser is gone.
   expect(firefoxManifest.permissions).not.toContain("offscreen");
   for (const size of sizes) {
     expect(firefoxManifest.action.theme_icons).toContainEqual({

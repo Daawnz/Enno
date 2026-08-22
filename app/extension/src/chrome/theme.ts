@@ -1,49 +1,46 @@
-import type { MessageRequest } from "../protocol";
 import { browser } from "../browser";
 
 // Theme preference is shared by every extension page and the background
-// service worker. "system" means "follow the browser"; "light" and "dark"
-// intentionally override the browser theme inside extension pages and, on
-// Chrome, the toolbar icon as well.
-export type ThemePreference = "system" | "light" | "dark";
+// service worker. There is deliberately no "follow browser" mode: the popup
+// defaults to Light and users can optionally force Dark. This keeps extension
+// appearance predictable even when the OS/browser themes disagree.
+export type ThemePreference = "light" | "dark";
 export const THEME_PREFERENCE_STORAGE_KEY = "themePreference";
+export const DEFAULT_THEME_PREFERENCE: ThemePreference = "light";
 
-// Toolbar icon variants. The transparent mark (no background) is the default;
-// the light-background variant is applied on dark browser themes where a bare
-// dark-green ring would lose contrast against the toolbar.
+// Toolbar icon variants. The transparent mark (no background) is the light
+// theme variant; the light-background variant is used for the dark theme so
+// the ring stays legible on dark toolbars.
 const ICON_SIZES = [16, 32, 48, 64, 128] as const;
 const ICON_STORAGE_KEY = "darkTheme";
-const SYSTEM_DARK_STORAGE_KEY = "systemDarkTheme";
 
 function iconPath(size: number, dark: boolean): string {
   return `icons/icon${dark ? "-bg" : ""}${size}.png`;
 }
 
-export function isThemePreference(value: unknown): value is ThemePreference {
-  return value === "system" || value === "light" || value === "dark";
+// Firefox keeps its native browser-theme toolbar icons via manifest
+// theme_icons, so we only manually override the toolbar icon in Chrome.
+function isFirefox(): boolean {
+  return typeof (browser.runtime as { getBrowserInfo?: unknown }).getBrowserInfo === "function";
 }
 
-export function effectiveDark(preference: ThemePreference, systemDark: boolean): boolean {
-  switch (preference) {
-    case "light":
-      return false;
-    case "dark":
-      return true;
-    case "system":
-      return systemDark;
-  }
+export function isThemePreference(value: unknown): value is ThemePreference {
+  return value === "light" || value === "dark";
+}
+
+export function effectiveDark(preference: ThemePreference): boolean {
+  return preference === "dark";
 }
 
 export async function readThemePreference(): Promise<ThemePreference> {
   try {
     const stored = await browser.storage.local.get(THEME_PREFERENCE_STORAGE_KEY);
     const value = stored[THEME_PREFERENCE_STORAGE_KEY] as unknown;
-    return isThemePreference(value) ? value : "system";
+    return isThemePreference(value) ? value : DEFAULT_THEME_PREFERENCE;
   }
   catch {
-    // Storage failures should never block startup; default to following the
-    // browser theme.
-    return "system";
+    // Storage failures should never block startup; default to light mode.
+    return DEFAULT_THEME_PREFERENCE;
   }
 }
 
@@ -65,15 +62,11 @@ export async function applyTheme(dark: boolean): Promise<void> {
 }
 
 // Pages call this to set <html data-theme="...">. The CSS in app/common/theme.css
-// gives data-theme rules precedence over prefers-color-scheme, so a manual
-// Light/Dark choice wins over the browser theme.
+// gives data-theme rules precedence over prefers-color-scheme, so the chosen
+// Light/Dark setting always wins over the browser theme.
 export async function applyThemePreferenceToDocument(preference?: ThemePreference): Promise<void> {
   const resolved = preference ?? await readThemePreference();
-  const root = document.documentElement;
-  if (resolved === "system")
-    delete root.dataset.theme;
-  else
-    root.dataset.theme = resolved;
+  document.documentElement.dataset.theme = resolved;
 }
 
 // Watches storage so every open extension page follows a theme preference
@@ -89,102 +82,27 @@ export async function initPageTheme(): Promise<void> {
   });
 }
 
-async function readSystemDark(): Promise<boolean | null> {
-  try {
-    const stored = await browser.storage.local.get([SYSTEM_DARK_STORAGE_KEY, ICON_STORAGE_KEY]);
-    if (typeof stored[SYSTEM_DARK_STORAGE_KEY] === "boolean")
-      return stored[SYSTEM_DARK_STORAGE_KEY] as boolean;
-    // Backward-compatible fallback: before the manual override existed, the
-    // stored icon flag was the effective system theme.
-    if (typeof stored[ICON_STORAGE_KEY] === "boolean")
-      return stored[ICON_STORAGE_KEY] as boolean;
-  }
-  catch {
-    // Fall through to unknown.
-  }
-  return null;
-}
-
-// Chrome only. Firefox resolves light/dark toolbar icons natively through the
-// manifest theme_icons key, so overriding the action icon there is intentionally
-// not attempted; extension UI still honors the preference via data-theme.
+// Keeps the Chrome toolbar icon in sync with the user's Light/Dark preference.
+// Firefox intentionally keeps its native browser-theme toolbar icons.
 export async function applyThemePreferenceToIcon(preference?: ThemePreference): Promise<void> {
-  if (!browser.offscreen)
+  if (isFirefox())
     return;
   const resolved = preference ?? await readThemePreference();
-  if (resolved === "system") {
-    const systemDark = await readSystemDark();
-    if (systemDark !== null)
-      await applyTheme(systemDark);
-  }
-  else {
-    await applyTheme(effectiveDark(resolved, false));
-  }
-}
-
-let offscreenEnsured = false;
-
-async function ensureOffscreenDocument(): Promise<void> {
-  if (offscreenEnsured || !browser.offscreen)
-    return;
-  // Set the flag before awaiting: the service worker restarts often and
-  // initTheme can run more than once per lifetime.
-  offscreenEnsured = true;
-  try {
-    await browser.offscreen.createDocument({
-      url: "offscreen.html",
-      reasons: [browser.offscreen.Reason.MATCH_MEDIA],
-      justification: "Detect prefers-color-scheme to pick the toolbar icon variant.",
-    });
-  }
-  catch {
-    // A document from a previous service-worker lifetime may still be open;
-    // "Only a single offscreen document may be created" is the expected race.
-  }
+  await applyTheme(effectiveDark(resolved));
 }
 
 // Chrome only. Firefox resolves light/dark toolbar icons natively through the
 // manifest theme_icons key, so this is a no-op there.
 export async function initTheme(): Promise<void> {
-  if (!browser.offscreen)
+  if (isFirefox())
     return;
   try {
-    // Re-apply the last known effective theme: the action icon state may be
-    // reset to the manifest default when the service worker restarts. If the
-    // user has chosen a manual override, use that instead of the browser theme.
+    // The action icon state may be reset to the manifest default when the
+    // service worker restarts, so re-apply the stored Light/Dark preference.
     const preference = await readThemePreference();
-    if (preference === "system") {
-      const systemDark = await readSystemDark();
-      if (systemDark !== null)
-        await applyTheme(systemDark);
-    }
-    else {
-      await applyTheme(effectiveDark(preference, false));
-    }
+    await applyTheme(effectiveDark(preference));
   }
   catch {
     // Fall back to the manifest default_icon (light-background variant).
   }
-  await ensureOffscreenDocument();
-}
-
-// Consumes theme reports from the offscreen document. The browser's actual
-// dark/light state is remembered separately so a later switch from a manual
-// override back to "system" can restore the correct toolbar icon.
-export async function handleThemeChanged(message: MessageRequest): Promise<boolean> {
-  if (message.type !== "themeChanged")
-    return false;
-  try {
-    const systemDark = Boolean(message.dark);
-    await browser.storage.local.set({ [SYSTEM_DARK_STORAGE_KEY]: systemDark });
-    const preference = await readThemePreference();
-    if (preference === "system")
-      await applyTheme(systemDark);
-    else
-      await applyTheme(effectiveDark(preference, false));
-  }
-  catch {
-    // Icon state is cosmetic; never let theme reporting break messaging.
-  }
-  return true;
 }

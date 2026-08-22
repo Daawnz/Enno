@@ -109,10 +109,11 @@
     --cta-fg: #16181a;
   }
 }
-/* Manual extension theme override. The popup lets users choose Auto (follow
-   the browser), Light, or Dark. When a page sets data-theme on <html>, those
-   values win over prefers-color-scheme so extension UI can intentionally
-   diverge from the browser theme. */
+
+/* Manual extension theme override. Extension UI defaults to Light; users can
+   toggle Dark from the popup. When a page sets data-theme on <html>, those
+   values win over prefers-color-scheme so extension UI stays intentional
+   even when the OS and browser themes disagree. */
 :root[data-theme="light"] {
   color-scheme: light;
 
