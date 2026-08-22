@@ -60,7 +60,7 @@
 
   $effect(() => {
     const s = session;
-    document.body.dataset.phase = redirecting ? "redirecting" : (s?.phase ?? "idle");
+    document.body.dataset.phase = redirecting ? "redirecting" : (s?.phase ?? "loading");
     if (redirecting || s?.phase !== "focus")
       return;
     override = { label: m.blocked_hold_to_unlock(), done: false, disabled: false };
@@ -98,39 +98,46 @@
   <title>{m.blocked_doc_title()}</title>
 </svelte:head>
 
-<main class="blocked-card flex w-full max-w-card flex-1 flex-col items-center justify-center gap-10 py-4 pb-7 text-center">
-  <div class="flex flex-col items-center gap-3.5">
-    <h1 id="title" class="font-bold tracking-tight leading-1_1">{title}</h1>
-    <p class="sub max-w-measure text-17 leading-relaxed text-ink-muted" id="sub">{sub}</p>
-  </div>
+<!-- Before the first session poll resolves, `session` is null and the page
+  would otherwise flash the "session ended" copy with a hidden hold button
+  (and dispatching into that state would silently no-op the hold). Render the
+  card only once the phase is actually known; the body[data-phase="loading"]
+  CSS shows the loading wheel for the poll window. -->
+{#if session !== null}
+  <main class="blocked-card flex w-full max-w-card flex-1 flex-col items-center justify-center gap-10 py-4 pb-7 text-center">
+    <div class="flex flex-col items-center gap-3.5">
+      <h1 id="title" class="font-bold tracking-tight leading-1_1">{title}</h1>
+      <p class="sub max-w-measure text-17 leading-relaxed text-ink-muted" id="sub">{sub}</p>
+    </div>
 
-  <SessionDial {session} size="lg" />
+    <SessionDial {session} size="lg" />
 
-  <div class="relative flex w-full flex-col items-center gap-4">
-    <a
-      id="back"
-      class="back inline-flex border-b border-transparent px-2.5 py-1.5 font-sans text-sm font-medium text-ink-muted transition-colors hover:border-sage hover:text-ink"
-      href={target ?? "#"}
-      hidden={session?.phase !== "idle"}
-    >{m.blocked_back()}</a>
-    <HoldButton
-      id="override-btn"
-      class={override.done ? "done" : undefined}
-      hidden={session?.phase !== "focus"}
-      holdMs={3000}
-      disabled={override.disabled}
-      required={() => session?.phase === "focus"}
-      onComplete={onOverride}
-    >
-      <span id="override-label">{override.label}</span>
-    </HoldButton>
-  </div>
-</main>
+    <div class="relative flex w-full flex-col items-center gap-4">
+      <a
+        id="back"
+        class="back inline-flex border-b border-transparent px-2.5 py-1.5 font-sans text-sm font-medium text-ink-muted transition-colors hover:border-sage hover:text-ink"
+        href={target ?? "#"}
+        hidden={session?.phase !== "idle"}
+      >{m.blocked_back()}</a>
+      <HoldButton
+        id="override-btn"
+        class={override.done ? "done" : undefined}
+        hidden={session?.phase !== "focus"}
+        holdMs={3000}
+        disabled={override.disabled}
+        required={() => session?.phase === "focus"}
+        onComplete={onOverride}
+      >
+        <span id="override-label">{override.label}</span>
+      </HoldButton>
+    </div>
+  </main>
 
-<footer
-  class="notice max-w-notice pb-1.5 text-center font-sans text-xs text-ink-muted"
-  hidden={session?.phase !== "focus"}
->{m.blocked_single_pass()}</footer>
+  <footer
+    class="notice max-w-notice pb-1.5 text-center font-sans text-xs text-ink-muted"
+    hidden={session?.phase !== "focus"}
+  >{m.blocked_single_pass()}</footer>
+{/if}
 
 <div id="loading" class="blocked-loading fixed inset-0 z-10 place-items-center bg-surface">
   <div class="blocked-loading__wheel" aria-hidden="true"></div>
@@ -139,8 +146,13 @@
 <style>
   /* The unlock redirect is driven by body[data-phase="redirecting"], which is
      toggled from the component; a plain hidden attribute would tear the swap
-     back down if the session poll re-renders before navigation commits. */
-  :global(body[data-phase="redirecting"]) .blocked-card {
+     back down if the session poll re-renders before navigation commits. The
+     "loading" phase covers the window before the first session poll resolves:
+     the card is gated out of the DOM by {#if session !== null}, and this rule
+     also hides it during any single-flush frame where the card mounts before
+     the phase effect runs. */
+  :global(body[data-phase="redirecting"]) .blocked-card,
+  :global(body[data-phase="loading"]) .blocked-card {
     display: none;
   }
 
@@ -148,7 +160,8 @@
     display: none;
   }
 
-  :global(body[data-phase="redirecting"]) .blocked-loading {
+  :global(body[data-phase="redirecting"]) .blocked-loading,
+  :global(body[data-phase="loading"]) .blocked-loading {
     display: grid;
   }
 

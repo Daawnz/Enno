@@ -47,7 +47,9 @@ test("progress wheel renders like the popup", async ({ extContext, extensionId }
 test("blocked copy when reached via redirect", async ({ extContext }) => {
   await send(extContext, "start");
   const page = await extContext.newPage();
-  await page.goto("https://www.reddit.com/");
+  // DNR `block` aborts the navigation; the background then swaps in
+  // blocked.html. Swallow the expected navigation rejection.
+  await page.goto("https://www.reddit.com/").catch(() => {});
 
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
   await expect(page.locator("#title")).toHaveText("Stay focused");
@@ -75,7 +77,7 @@ test("idle copy after a completed session", async ({ extContext, extensionId }) 
 test("loading wheel is present but hidden until unlock", async ({ extContext }) => {
   await send(extContext, "start");
   const page = await extContext.newPage();
-  await page.goto("https://www.reddit.com/");
+  await page.goto("https://www.reddit.com/").catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 
   // Hidden by default - only shown while the unlock redirect is in flight.
@@ -93,10 +95,14 @@ test("override passes once; a refresh re-blocks", async ({ extContext }) => {
     hits += 1;
     return route.fulfill({ body: "<html><body>site loaded</body></html>", contentType: "text/html" });
   });
-  await page.goto("https://www.reddit.com/");
+  await page.goto("https://www.reddit.com/").catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 
   const overrideBtn = page.locator("#override-btn");
+  // The button only becomes interactive once the first session poll resolved
+  // to "focus" (required() stays false and the hold silently no-ops until
+  // then); dispatching into that window would leave the page blocked forever.
+  await expect(overrideBtn).toBeVisible();
   await overrideBtn.dispatchEvent("mousedown", { button: 0 });
   await page.clock.runFor(3000);
 
@@ -108,7 +114,7 @@ test("override passes once; a refresh re-blocks", async ({ extContext }) => {
   expect(state.phase).toBe("focus");
   await expect.poll(() => getEnabledRulesets(extContext)).toContain(BLOCKLIST_RULESET);
 
-  await page.reload();
+  await page.reload().catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
   expect(hits).toBe(1);
 });
@@ -124,13 +130,17 @@ test("unlock goes to the blocked site, not the referrer", async ({ extContext })
     return route.fulfill({ body: "<html><body>site loaded</body></html>", contentType: "text/html" });
   });
   // Stand in for clicking a reddit result while browsing google.
-  await page.goto("https://www.reddit.com/", { referer: "https://www.google.com/" });
+  await page.goto("https://www.reddit.com/", { referer: "https://www.google.com/" }).catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
   await expect(page.locator("#sub")).toHaveText(
     "www.reddit.com is blocked until the session ends.",
   );
 
   const overrideBtn = page.locator("#override-btn");
+  // The button only becomes interactive once the first session poll resolved
+  // to "focus" (required() stays false and the hold silently no-ops until
+  // then); dispatching into that window would leave the page blocked forever.
+  await expect(overrideBtn).toBeVisible();
   await overrideBtn.dispatchEvent("mousedown", { button: 0 });
   await page.clock.runFor(3000);
 
@@ -160,11 +170,15 @@ test("unlock follows a redirect chain into a blocked subdomain; a refresh re-blo
     return route.fulfill({ body: "<html><body>old site loaded</body></html>", contentType: "text/html" });
   });
 
-  await page.goto("https://www.reddit.com/");
+  await page.goto("https://www.reddit.com/").catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
   expect(hits).toEqual([]);
 
   const overrideBtn = page.locator("#override-btn");
+  // The button only becomes interactive once the first session poll resolved
+  // to "focus" (required() stays false and the hold silently no-ops until
+  // then); dispatching into that window would leave the page blocked forever.
+  await expect(overrideBtn).toBeVisible();
   await overrideBtn.dispatchEvent("mousedown", { button: 0 });
   await page.clock.runFor(3000);
   // Wait for the auto-navigation to the granted host to be consumed.
@@ -181,7 +195,7 @@ test("unlock follows a redirect chain into a blocked subdomain; a refresh re-blo
   expect(state.phase).toBe("focus");
   await expect.poll(() => getEnabledRulesets(extContext)).toContain(BLOCKLIST_RULESET);
 
-  await page.reload();
+  await page.reload().catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
   expect(hits).toEqual(["www", "old"]);
 });
@@ -196,7 +210,7 @@ test("blocked tab open when the session ends lands on the target once; no bounce
     hits += 1;
     return route.fulfill({ body: "<html><body>site loaded</body></html>", contentType: "text/html" });
   });
-  await page.goto("https://www.reddit.com/");
+  await page.goto("https://www.reddit.com/").catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 
   // End the session while the blocked tab is open. The redirect to the target
@@ -221,7 +235,7 @@ test("blocked tab self-heals when the session-end alarm is missed", async ({ ext
     hits += 1;
     return route.fulfill({ body: "<html><body>site loaded</body></html>", contentType: "text/html" });
   });
-  await page.goto("https://www.reddit.com/");
+  await page.goto("https://www.reddit.com/").catch(() => {});
   await expect(page).toHaveURL(/chrome-extension:\/\/[^/]+\/blocked.html/);
 
   // Simulate a missed/late alarm: the stored session expires while the alarm

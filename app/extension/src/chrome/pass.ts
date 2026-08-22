@@ -31,6 +31,12 @@ type PendingPass = {
 let nextRuleId = 1;
 const pending = new Map<number, PendingPass>();
 
+// Retry budget for an unlock navigation that races DNR allow-rule propagation
+// (see retryBlockedPassNavigation). Lives next to `pending` so it is cleared
+// with the pass it belongs to.
+const retryCount = new Map<number, number>();
+const MAX_RETRY = 3;
+
 const REVOKE_MS = 30_000;
 
 function escapeRegex(value: string) {
@@ -66,6 +72,7 @@ function clearPending(tabId: number) {
   if (entry.timer)
     clearTimeout(entry.timer);
   pending.delete(tabId);
+  retryCount.delete(tabId);
 }
 
 async function grantDynamicAllow(tabId: number, host: string, root: string | null) {
@@ -129,6 +136,45 @@ export async function grantPass(tabId: number, targetUrl: string): Promise<boole
   }
   await setRulesetEnabled(true);
   return false;
+}
+
+function hostWithinPass(host: string, entry: PendingPass): boolean {
+  return entry.root
+    ? host === entry.root || host.endsWith(`.${entry.root}`)
+    : host === entry.host;
+}
+
+// Exposed to the background navigation-error handler: whether a URL is inside
+// a currently granted pass (the granted domain or one of its subdomains). A
+// pass stays live until the first in-pass main-frame commit (or the 30s
+// fallback), so a main-frame error on such a URL is pass-internal unless it is
+// a declarativeNetRequest block (see retryBlockedPassNavigation).
+export function passCoversUrl(tabId: number, url: string): boolean {
+  const entry = pending.get(tabId);
+  if (!entry)
+    return false;
+  const host = hostOf(url);
+  return host !== null && hostWithinPass(host, entry);
+}
+
+// Called from the webNavigation error handler. A grant installs a dynamic
+// `allow` rule and immediately navigates; DNR rule application can reach the
+// network service a few milliseconds after updateDynamicRules resolves, so the
+// very next navigation to the granted host can be briefly re-blocked by the
+// static blocklist rule. When that happens, retry the same URL a bounded number
+// of times (the allow rule is live by then) instead of bouncing the user back to
+// the blocked page. Returns true if the retry was scheduled, false otherwise.
+export function retryBlockedPassNavigation(tabId: number, url: string): boolean {
+  if (!passCoversUrl(tabId, url))
+    return false;
+  const n = retryCount.get(tabId) ?? 0;
+  if (n >= MAX_RETRY)
+    return false;
+  retryCount.set(tabId, n + 1);
+  setTimeout(() => {
+    void browser.tabs.update(tabId, { url });
+  }, 20);
+  return true;
 }
 
 export function registerPassCleanup(): void {

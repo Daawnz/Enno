@@ -5,14 +5,69 @@ import { browser } from "./browser";
 import { runReconcile, runTransition } from "./chrome/controller";
 import { initLocale } from "./chrome/i18n";
 import { handleMessage } from "./chrome/messaging";
-import { registerPassCleanup } from "./chrome/pass";
+import { passCoversUrl, registerPassCleanup, retryBlockedPassNavigation } from "./chrome/pass";
 import { handleThemeChanged, initTheme } from "./chrome/theme";
+import { blockedRootDomainOf } from "./core/blocklist";
 import { FOCUS_ALARM } from "./core/constants";
 
 void initLocale();
 void initTheme();
 
 const tabLastUrl = new Map<number, string>();
+
+function hostOf(url: string): string | null {
+  try {
+    return new URL(url).hostname || null;
+  }
+  catch {
+    return null;
+  }
+}
+
+// The focus ruleset blocks (declarativeNetRequest `block`) main-frame
+// navigations to blocked domains, so a real response never arrives. The block
+// surfaces the blocked page in the tab; the page itself handles the override
+// flow and the end-of-session redirect. This replaces a DNR `redirect` rule,
+// which would require a host_permission per blocked domain (Chrome gives
+// implicit host access to `block` and `allow` rules only), defeating the
+// no-per-site-access install prompt.
+browser.webNavigation.onErrorOccurred.addListener((details) => {
+  if (details.frameId !== 0)
+    return;
+  const host = hostOf(details.url);
+  if (!host || blockedRootDomainOf(host) === null)
+    return;
+  // A grant installs a dynamic `allow` rule and navigates immediately; DNR
+  // rule application can trail the very next navigation by a few ms, so that
+  // navigation can be re-blocked once by the static blocklist rule. Treat only
+  // that case (a declarativeNetRequest block) as transient and retry the same
+  // URL (bounded) instead of bouncing the user back to the blocked page.
+  //
+  // Any OTHER failure on a URL inside a granted pass - e.g. a non-committing
+  // 204 abort of the post-unlock auto-navigation standing in for a pre-commit
+  // redirect hop - leaves the pass live until a real commit. Swapping in
+  // blocked.html there would re-navigate the tab and abort the follow-up
+  // navigation to the passed domain, so those errors must be ignored. Only a
+  // genuine block (no pass, or exceeded retries) shows the blocked page.
+  if (
+    details.error?.includes("ERR_BLOCKED_BY_CLIENT")
+    && retryBlockedPassNavigation(details.tabId, details.url)
+  ) {
+    return;
+  }
+  if (passCoversUrl(details.tabId, details.url))
+    return;
+  void showBlockedPage(details.tabId);
+});
+
+async function showBlockedPage(tabId: number): Promise<void> {
+  try {
+    await browser.tabs.update(tabId, { url: browser.runtime.getURL("blocked.html") });
+  }
+  catch {
+    // The tab was closed while the update was in flight.
+  }
+}
 
 browser.webNavigation.onBeforeNavigate.addListener((details) => {
   if (details.frameId === 0) {
