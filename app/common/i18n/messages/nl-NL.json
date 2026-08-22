@@ -15,6 +15,10 @@
     }
   ],
   "popup_hold_aria": "Houd {seconds} seconden vast om de focussessie te beëindigen",
+  "popup_theme_auto": "Auto",
+  "popup_theme_light": "Licht",
+  "popup_theme_dark": "Donker",
+  "popup_theme_aria": "Thema wijzigen: automatisch, licht of donker",
 
   "hold_helper": "Blijf {seconds}s vasthouden",
 

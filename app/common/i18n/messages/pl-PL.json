@@ -17,6 +17,10 @@
     }
   ],
   "popup_hold_aria": "Przytrzymaj {seconds} sekund, aby zakończyć sesję skupienia",
+  "popup_theme_auto": "Automatycznie",
+  "popup_theme_light": "Jasny",
+  "popup_theme_dark": "Ciemny",
+  "popup_theme_aria": "Zmień motyw: automatyczny, jasny lub ciemny",
 
   "hold_helper": "Przytrzymaj jeszcze {seconds}s",
 

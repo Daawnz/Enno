@@ -15,6 +15,10 @@
     }
   ],
   "popup_hold_aria": "{seconds} Sekunden gedrückt halten, um die Fokussitzung zu beenden",
+  "popup_theme_auto": "Auto",
+  "popup_theme_light": "Hell",
+  "popup_theme_dark": "Dunkel",
+  "popup_theme_aria": "Design wechseln: automatisch, hell oder dunkel",
 
   "hold_helper": "{seconds}s weiter gedrückt halten",
 

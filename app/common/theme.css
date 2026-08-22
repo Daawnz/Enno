@@ -109,3 +109,70 @@
     --cta-fg: #16181a;
   }
 }
+/* Manual extension theme override. The popup lets users choose Auto (follow
+   the browser), Light, or Dark. When a page sets data-theme on <html>, those
+   values win over prefers-color-scheme so extension UI can intentionally
+   diverge from the browser theme. */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #fdfcf8;
+  --fg: #3a4549;
+  --muted: #9ba4b5;
+  --ink-muted: #6b7782;
+  --sage: #7fb093;
+  --sage-hi: #6ea283;
+  --lavender: #a8a4ce;
+  --lavender-hi: #9894c4;
+  --terracotta: #e29578;
+  --terracotta-hi: #b0563d;
+  --card: #ffffff;
+  --ring-track: rgba(58, 69, 73, 0.1);
+
+  --cream-hi: #fffdf4;
+  --cream-lo: #f9f6ee;
+  --surface-tint: #f9faf6;
+  --sheet: #f3f4f0;
+  --break-bg: #f7f6fb;
+  --ink-strong: #36414a;
+  --ink-body: #4a5660;
+  --ink-body-soft: #46515b;
+  --ink-subtle: #5f6a75;
+  --ink-link: #667380;
+  --ink-cool: #545f68;
+  --cta: #38614A;
+  --cta-hover: #2D4E3C;
+  --cta-fg: #FDFCF8;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #16181a;
+  --fg: #d7dde1;
+  --muted: #6d7984;
+  --ink-muted: #97a2ac;
+  --sage: #8fb69c;
+  --sage-hi: #7ca58a;
+  --lavender: #b3aed6;
+  --lavender-hi: #a19cc9;
+  --terracotta: #e8a188;
+  --terracotta-hi: #b0563d;
+  --card: #1e2123;
+  --ring-track: rgba(215, 221, 225, 0.14);
+
+  --cream-hi: #1c1f21;
+  --cream-lo: #121415;
+  --surface-tint: #1b1e20;
+  --sheet: #181b1d;
+  --break-bg: #181a20;
+  --ink-strong: #e9edf0;
+  --ink-body: #c5cdd4;
+  --ink-body-soft: #bac3cb;
+  --ink-subtle: #a7b1ba;
+  --ink-link: #9aa8b5;
+  --ink-cool: #aab4bd;
+  --cta: #7fb093;
+  --cta-hover: #6ea283;
+  --cta-fg: #16181a;
+}

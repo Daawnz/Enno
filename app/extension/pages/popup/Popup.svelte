@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { Shield } from "@lucide/svelte";
+  import type { ThemePreference } from "../../src/chrome/theme";
+  import { Monitor, Moon, Shield, Sun } from "@lucide/svelte";
   import * as m from "../../../common/i18n/generated/messages.js";
   import { getLocale } from "../../../common/i18n/generated/runtime.js";
+  import { applyThemePreferenceToDocument, writeThemePreference } from "../../src/chrome/theme";
   import { fetchSession, sendAction } from "../../src/client";
   import { domainsForLocale } from "../../src/core/blocklist";
   import HoldButton from "../../src/shared/HoldButton.svelte";
@@ -9,6 +11,31 @@
   import { useSession } from "../../src/shared/useSession.svelte";
 
   const stopHoldMs = 5000;
+
+  // The page main module applies the stored preference before mount, so the
+  // data attribute is already the source of truth for the first render.
+  let theme = $state<ThemePreference>(
+    document.documentElement.dataset.theme === "light"
+      ? "light"
+      : document.documentElement.dataset.theme === "dark"
+      ? "dark"
+      : "system",
+  );
+
+  const themeLabel = $derived(
+    theme === "dark"
+      ? m.popup_theme_dark()
+      : theme === "light"
+      ? m.popup_theme_light()
+      : m.popup_theme_auto(),
+  );
+
+  async function cycleTheme() {
+    const next: ThemePreference = theme === "system" ? "light" : theme === "light" ? "dark" : "system";
+    theme = next;
+    await writeThemePreference(next);
+    await applyThemePreferenceToDocument(next);
+  }
 
   const store = useSession({
     getState: fetchSession,
@@ -85,6 +112,22 @@
     <Shield class="text-sage" size={14} />
     {m.popup_sites_shielded({ count: blockedCount })}
   </span>
+  <button
+    id="theme-toggle"
+    class="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-ink/10 px-2.5 py-1 text-ink-muted transition-colors hover:border-sage hover:text-ink"
+    onclick={cycleTheme}
+    aria-label={m.popup_theme_aria()}
+    title={m.popup_theme_aria()}
+  >
+    {#if theme === "dark"}
+      <Moon class="text-sage" size={14} />
+    {:else if theme === "light"}
+      <Sun class="text-sage" size={14} />
+    {:else}
+      <Monitor class="text-sage" size={14} />
+    {/if}
+    <span>{themeLabel}</span>
+  </button>
 </footer>
 
 <style>

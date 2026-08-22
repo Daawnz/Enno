@@ -5,17 +5,16 @@ All of its features run entirely on your device.
 
 ## What Enno stores
 
-Enno stores a single focus-session record in your browser's local storage, and only while a session is running:
+Enno stores two kinds of data in your browser's local storage:
 
-- Whether a focus session is active.
-- The timer end time.
+- A focus-session record, only while a session is running:
+  - Whether a focus session is active.
+  - The timer end time.
+  - The record also carries an internal schema version number so stored data stays compatible across extension updates.
+  - When the session ends, Enno erases that record.
+- A theme preference (`auto`, `light`, or `dark`) and the derived toolbar-icon dark flag, so the popup, blocked page, and Chrome toolbar icon can keep your chosen appearance across opens and service-worker restarts.
 
-The record also carries an internal schema version number so stored data stays compatible across extension updates.
-
-When the session ends, Enno erases that record.
-
-Nothing else is stored.
-That record never leaves your device: it is never synced, uploaded, or shared.
+None of this data ever leaves your device: it is never synced, uploaded, or shared.
 
 ## What Enno does not do
 
@@ -27,16 +26,18 @@ It contains no analytics, no tracking, and no third-party services, and it uses 
 
 Enno requests only the permissions it needs to work, and uses each one locally:
 
-- `storage` - holds the focus-session record described above.
+- `storage` - holds the local focus-session record and theme preference described above.
 - `alarms` - schedules the timer that ends a session.
 - `declarativeNetRequest` - blocks distracting sites while a session is running.
 - `webNavigation` - detects navigation to a blocked site so it can show the blocked page.
+- `offscreen` - runs a hidden page that detects the browser light/dark theme for the Chrome toolbar icon.
 
 None of these permissions are used to read or transmit personal data.
 
 ## Deleting your data
 
 Stopping a running session from the popup erases the record immediately.
+The theme preference stays until you clear the extension's data or uninstall it.
 You can also remove all stored data by uninstalling the extension:
 
 - Chrome: `chrome://extensions` - Remove.

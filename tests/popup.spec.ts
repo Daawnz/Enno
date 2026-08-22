@@ -86,3 +86,39 @@ test("stops a session back to idle after holding stop for 5 seconds", async ({
   await expect(page.locator("#enter-focus-button")).toBeVisible();
   await expect(page.locator("#end-focus-button")).toBeHidden();
 });
+
+test("theme toggle cycles through auto, light, and dark", async ({ extContext, extensionId }) => {
+  const page = await openPopup(extContext, extensionId);
+  const toggle = page.locator("#theme-toggle");
+
+  await expect(toggle).toContainText("Auto");
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
+
+  await toggle.click();
+  await expect(toggle).toContainText("Light");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+
+  await toggle.click();
+  await expect(toggle).toContainText("Dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+
+  const stored = await page.evaluate(async () =>
+    (await chrome.storage.local.get("themePreference")).themePreference,
+  );
+  expect(stored).toBe("dark");
+
+  await toggle.click();
+  await expect(toggle).toContainText("Auto");
+  await expect(page.evaluate(() => document.documentElement.hasAttribute("data-theme"))).resolves.toBe(false);
+});
+
+test("blocked page honors a theme override chosen in the popup", async ({ extContext, extensionId }) => {
+  const popup = await openPopup(extContext, extensionId);
+  await popup.locator("#theme-toggle").click();
+  await expect(popup.locator("html")).toHaveAttribute("data-theme", "light");
+
+  const blocked = await extContext.newPage();
+  await blocked.goto(`chrome-extension://${extensionId}/blocked.html`);
+  await expect(blocked.locator("html")).toHaveAttribute("data-theme", "light");
+});
